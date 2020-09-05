@@ -20,15 +20,49 @@ void APawnTank::BeginPlay()
 	Super::BeginPlay();
 }
 
-
 void APawnTank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Move pawn
+	Rotate();
+	Move();
 }
 
 void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	// Create input bindings
+	PlayerInputComponent->BindAxis(FName("MoveForward"), this, &APawnTank::CalculateMoveInput);
+	PlayerInputComponent->BindAxis(FName("Turn"), this, &APawnTank::CalculateRotationInput);
+}
+
+void APawnTank::CalculateMoveInput(float Value)
+{
+	MoveDirection = FVector(
+		Value * MoveSpeed * GetWorld()->DeltaTimeSeconds,	// X axis, a.k.a Forward vector
+		0,													// Y
+		0													// Z
+	);
+}
+
+void APawnTank::CalculateRotationInput(float Value)
+{
+	FRotator RotationAmount = FRotator(
+		0,														//Pitch: X
+		Value * RotationSpeed * GetWorld()->DeltaTimeSeconds,	// Yaw: Z
+		0														// Roll: Y
+	);
+	RotationDirection = FQuat(RotationAmount);
+}
+
+void APawnTank::Move()
+{
+	AddActorLocalOffset(MoveDirection, true);
+}
+
+void APawnTank::Rotate()
+{
+	AddActorLocalRotation(RotationDirection, true);
 }
