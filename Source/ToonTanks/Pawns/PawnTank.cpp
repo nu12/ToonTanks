@@ -18,6 +18,8 @@ APawnTank::APawnTank()
 void APawnTank::BeginPlay()
 {
 	Super::BeginPlay();
+
+	PlayerController = Cast<APlayerController>(GetController());
 }
 
 void APawnTank::Tick(float DeltaTime)
@@ -27,6 +29,17 @@ void APawnTank::Tick(float DeltaTime)
 	// Move pawn
 	Rotate();
 	Move();
+
+	// Rotate Tank Turret
+	if (!PlayerController) {
+		UE_LOG(LogTemp, Error, TEXT("PlayerController not found!"));
+		return;
+	}
+
+	// Get cursor position in the world
+	FHitResult CursosHitResult; //Out
+	PlayerController->GetHitResultUnderCursor(ECC_Visibility, false, CursosHitResult);
+	RotateTurret(CursosHitResult.ImpactPoint);
 }
 
 void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

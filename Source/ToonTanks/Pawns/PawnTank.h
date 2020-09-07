@@ -45,4 +45,6 @@ private:
 
 	void Move();
 	void Rotate();
+
+	APlayerController* PlayerController = nullptr;
 };
