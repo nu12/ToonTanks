@@ -36,6 +36,7 @@ void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	// Create input bindings
 	PlayerInputComponent->BindAxis(FName("MoveForward"), this, &APawnTank::CalculateMoveInput);
 	PlayerInputComponent->BindAxis(FName("Turn"), this, &APawnTank::CalculateRotationInput);
+	PlayerInputComponent->BindAction(FName("Fire"), IE_Pressed, this, &APawnTank::Fire);
 }
 
 void APawnTank::CalculateMoveInput(float Value)
@@ -65,4 +66,9 @@ void APawnTank::Move()
 void APawnTank::Rotate()
 {
 	AddActorLocalRotation(RotationDirection, true);
+}
+
+void APawnTank::HandleDestruction()
+{
+	UE_LOG(LogTemp, Warning, TEXT("HandleDestruction from Tank!"));
 }

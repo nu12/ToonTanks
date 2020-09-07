@@ -22,6 +22,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void HandleDestruction();
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* SpringArmPomponent = nullptr;
