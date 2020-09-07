@@ -30,9 +30,10 @@ private:
 	UCameraComponent* CameraComponent = nullptr;
 
 	// Tank movement
-
-	float MoveSpeed = 100.f;
-	float RotationSpeed = 100.f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float MoveSpeed = 600.f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float RotationSpeed = 200.f;
 
 	FVector MoveDirection;
 	FQuat RotationDirection;
