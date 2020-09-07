@@ -6,9 +6,8 @@
 #include "PawnBase.h"
 #include "PawnTurret.generated.h"
 
-/**
- * 
- */
+class APawnTank;
+
 UCLASS()
 class TOONTANKS_API APawnTurret : public APawnBase
 {
@@ -24,7 +23,12 @@ private:
 
 	UPROPERTY(EditAnywhere, category = "Combat")
 	float FireRate = 2.f;
+	UPROPERTY(EditAnywhere, category = "Combat")
+	float FireRange = 500.f;
 	FTimerHandle FireRateTimerHandle;
-	void CheckFireCondition();
+	void CheckFireCondition() const;
+	float GetDistanceToPawn() const;
+
+	APawnTank* PlayerPawn = nullptr;
 
 };
