@@ -34,7 +34,7 @@ void ATankGameModeBase::HandleGameStart()
 		GetWorld()->GetTimerManager().SetTimer(
 			EnableControllerTimerHandle,
 			EnableControllerDelegate,
-			StartDelay + 1,
+			StartDelay,
 			false
 		);
 	}
