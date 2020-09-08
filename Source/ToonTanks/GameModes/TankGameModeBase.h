@@ -7,6 +7,7 @@
 #include "TankGameModeBase.generated.h"
 
 class APawnTank;
+class APlayerControllerBase;
 UCLASS()
 class TOONTANKS_API ATankGameModeBase : public AGameModeBase
 {
@@ -29,4 +30,9 @@ private:
 	APawnTank* PlayerPawn = nullptr;
 	int32 RemainingTurrets = 0;
 	int32 GetRemainingTurretsCounter();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game Mode", meta = (AllowPrivateAccess = "true"))
+	int32 StartDelay = 3;
+
+	APlayerControllerBase* PlayerController = nullptr;
 };

@@ -5,6 +5,7 @@
 #include "ToonTanks/Pawns/PawnTank.h"
 #include "ToonTanks/Pawns/PawnTurret.h"
 #include "Kismet/GameplayStatics.h"
+#include "ToonTanks/PlayerControllers/PlayerControllerBase.h"
 
 void ATankGameModeBase::BeginPlay()
 {
@@ -17,6 +18,10 @@ void ATankGameModeBase::HandleGameStart()
 {
 	PlayerPawn = Cast<APawnTank>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 	RemainingTurrets = GetRemainingTurretsCounter();
+
+	PlayerController = Cast<APlayerControllerBase>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	PlayerController->SetControllerEnabled(false); // Disable input
 
 	GameStart(); // BlueprintImplementableEvent: Call the funciton in the Blueprint
 }
@@ -32,6 +37,7 @@ void ATankGameModeBase::HandleGameOver(bool PlayerWon)
 		UE_LOG(LogTemp, Warning, TEXT("Player Lost"));
 	}
 	GameOver(PlayerWon); // BlueprintImplementableEvent: Call the funciton in the Blueprint
+
 }
 
 void ATankGameModeBase::ActorDied(AActor* DeadActor)
@@ -40,6 +46,8 @@ void ATankGameModeBase::ActorDied(AActor* DeadActor)
 	{
 		PlayerPawn->HandleDestruction();
 		HandleGameOver(false);
+
+		PlayerController->SetControllerEnabled(false); // Disable input
 	}
 	else if(APawnTurret* DeadTurret = Cast<APawnTurret>(DeadActor))
 	{
