@@ -22,5 +22,17 @@ void UHealthComponent::BeginPlay()
 
 void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Damage Taken"));
+	if(!GameMode)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GameMode not found!"));
+		return;
+	}
+
+	if (Health <= 0) return;
+
+	Health = FMath::Clamp<float>(Health - Damage, 0.f, DefaultHealth);
+
+	if (Health <= 0) {
+		GameMode->ActorDied(GetOwner());
+	}
 }

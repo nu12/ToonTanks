@@ -17,4 +17,5 @@ void ATankGameModeBase::HandleGameOver(bool PlayerWon)
 
 void ATankGameModeBase::ActorDied(AActor* DeadActor)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Actor died: %s"), *DeadActor->GetName());
 }
