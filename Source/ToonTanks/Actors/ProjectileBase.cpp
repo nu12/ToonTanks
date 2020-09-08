@@ -33,9 +33,10 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	AActor* MyOwner = GetOwner();
 	if (!MyOwner) return;
 	if (!OtherActor || OtherActor == this || OtherActor == MyOwner) return; // Do not damage self
+	if (!HitParticle) UE_LOG(LogTemp, Error, TEXT("ProjectileClass not found!"));
 
 	UGameplayStatics::ApplyDamage(OtherActor, ProjectileDamage, MyOwner->GetInstigatorController(), this, DamageType);
-
+	UGameplayStatics::SpawnEmitterAtLocation(this, HitParticle, GetActorLocation());
 	Destroy();
 }
 
