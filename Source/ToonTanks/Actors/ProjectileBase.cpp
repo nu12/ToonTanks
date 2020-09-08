@@ -3,6 +3,8 @@
 
 #include "ProjectileBase.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/Actor.h"
 
 AProjectileBase::AProjectileBase()
 {
@@ -11,6 +13,7 @@ AProjectileBase::AProjectileBase()
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectile Mesh"));
 	RootComponent = StaticMeshComponent;
+	StaticMeshComponent->OnComponentHit.AddDynamic(this, &AProjectileBase::OnHit); // Macro for add dynamic delegate. See OnComponentHit for more information
 
 	ProjectileComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Component"));
 	ProjectileComponent->InitialSpeed = ProjectileSpeed;
@@ -23,6 +26,17 @@ void AProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	AActor* MyOwner = GetOwner();
+	if (!MyOwner) return;
+	if (!OtherActor || OtherActor == this || OtherActor == MyOwner) return; // Do not damage self
+
+	UGameplayStatics::ApplyDamage(OtherActor, ProjectileDamage, MyOwner->GetInstigatorController(), this, DamageType);
+
+	Destroy();
 }
 
 
