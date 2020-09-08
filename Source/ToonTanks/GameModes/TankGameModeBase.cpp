@@ -21,9 +21,23 @@ void ATankGameModeBase::HandleGameStart()
 
 	PlayerController = Cast<APlayerControllerBase>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
-	PlayerController->SetControllerEnabled(false); // Disable input
 
 	GameStart(); // BlueprintImplementableEvent: Call the funciton in the Blueprint
+
+	if (PlayerController) 
+	{
+		PlayerController->SetControllerEnabled(false); // Disable input
+
+		// Create Time Manager and Delegate to reenable the controller
+		FTimerHandle EnableControllerTimerHandle;
+		FTimerDelegate EnableControllerDelegate = FTimerDelegate::CreateUObject(PlayerController, &APlayerControllerBase::SetControllerEnabled, true);
+		GetWorld()->GetTimerManager().SetTimer(
+			EnableControllerTimerHandle,
+			EnableControllerDelegate,
+			StartDelay + 1,
+			false
+		);
+	}
 }
 
 void ATankGameModeBase::HandleGameOver(bool PlayerWon)
