@@ -24,6 +24,9 @@ private:
 	UProjectileMovementComponent* ProjectileComponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, Category = "Projectile")
+	UParticleSystemComponent* ParticleTrailComponent = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Projectile")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
