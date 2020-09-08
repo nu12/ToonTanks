@@ -63,5 +63,6 @@ void APawnBase::HandleDestruction()
 		return;
 	}
 	UGameplayStatics::SpawnEmitterAtLocation(this, DeathParticle, GetActorLocation());
-	if (DeathSound) UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());;
+	if (DeathSound) UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+	GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(CameraShake);
 }

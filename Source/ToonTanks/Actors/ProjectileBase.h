@@ -44,9 +44,13 @@ private:
 	UParticleSystem* HitParticle;
 
 	UPROPERTY(EditAnywhere, Category = "Effects")
-	USoundBase* LaunchSound = nullptr;;
+	USoundBase* LaunchSound = nullptr;
+
 	UPROPERTY(EditAnywhere, Category = "Effects")
-	USoundBase* HitSound = nullptr;;
+	USoundBase* HitSound = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Effects")
+	TSubclassOf<UCameraShake> CameraShake;
 
 
 	//FUNCTIONS
