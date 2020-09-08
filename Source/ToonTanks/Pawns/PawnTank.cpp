@@ -84,5 +84,13 @@ void APawnTank::Rotate()
 void APawnTank::HandleDestruction()
 {
 	Super::HandleDestruction();
-	UE_LOG(LogTemp, Warning, TEXT("HandleDestruction from Tank!"));
+	
+	bIsPlayerAlive = false;
+	SetActorHiddenInGame(true);	// Hide mesh
+	SetActorTickEnabled(false); // Stop moving
+}
+
+bool APawnTank::IsPlayerAlive()
+{
+	return bIsPlayerAlive;
 }

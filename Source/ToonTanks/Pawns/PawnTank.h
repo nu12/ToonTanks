@@ -19,6 +19,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void HandleDestruction() override;
+	bool IsPlayerAlive();
 
 protected:
 	virtual void BeginPlay() override;
@@ -36,6 +37,8 @@ private:
 	float MoveSpeed = 600.f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float RotationSpeed = 200.f;
+
+	bool bIsPlayerAlive = true;
 
 	FVector MoveDirection;
 	FQuat RotationDirection;

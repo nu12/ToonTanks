@@ -13,8 +13,6 @@ void APawnTurret::BeginPlay()
 	GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &APawnTurret::CheckFireCondition, FireRate, true);
 
 	PlayerPawn = Cast<APawnTank>(UGameplayStatics::GetPlayerPawn(this, 0));
-
-	DrawDebugCircle(GetWorld(), GetActorLocation(), FireRange, 100, FColor::Red, false,10.f, (uint8)'\000', 10.f, FVector(1.f, 0.f, 0.f), FVector(0.f, 1.f, 0.f));
 }
 
 void APawnTurret::Tick(float DeltaTime)
@@ -34,7 +32,7 @@ void APawnTurret::CheckFireCondition()
 {
 	if (!PlayerPawn) return;
 
-	//if (PlayerPawn.IsDead()) return;
+	if (!PlayerPawn->IsPlayerAlive()) return;
 
 	if (GetDistanceToPawn() > FireRange) return;
 
