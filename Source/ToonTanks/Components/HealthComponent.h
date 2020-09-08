@@ -25,5 +25,6 @@ private:
 	
 	ATankGameModeBase* GameMode = nullptr;
 
-	//void TakeDamage(AActor*, DamagedActor, float, Damage, const class UDamageType*, DamageType, class AController*, InstigatedBy, AActor*, DamageCauser);
+	UFUNCTION()
+	void TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 };
