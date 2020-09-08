@@ -50,4 +50,5 @@ void APawnTurret::HandleDestruction()
 {
 	Super::HandleDestruction();
 	UE_LOG(LogTemp, Warning, TEXT("HandleDestruction from Turret!"));
+	Destroy();
 }
