@@ -20,6 +20,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	// COMPONENTS
 	UPROPERTY(VisibleAnywhere, Category = "Projectile")
 	UProjectileMovementComponent* ProjectileComponent = nullptr;
 
@@ -29,6 +30,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Projectile")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
+	// VARIABLES
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
 	TSubclassOf<UDamageType> DamageType;
 
@@ -41,6 +43,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Effects")
 	UParticleSystem* HitParticle;
 
+	UPROPERTY(EditAnywhere, Category = "Effects")
+	USoundBase* LaunchSound = nullptr;;
+	UPROPERTY(EditAnywhere, Category = "Effects")
+	USoundBase* HitSound = nullptr;;
+
+
+	//FUNCTIONS
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
