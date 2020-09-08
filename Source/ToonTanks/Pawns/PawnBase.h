@@ -17,6 +17,7 @@ class TOONTANKS_API APawnBase : public APawn
 public:
 	APawnBase();
 	virtual void Tick(float DeltaTime) override;
+	virtual void HandleDestruction();
 	
 protected:
 
@@ -24,7 +25,6 @@ protected:
 
 	void Fire();
 
-	virtual void HandleDestruction();
 
 private:
 	// Components

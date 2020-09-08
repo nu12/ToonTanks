@@ -6,9 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "TankGameModeBase.generated.h"
 
-/**
- * 
- */
+class APawnTank;
 UCLASS()
 class TOONTANKS_API ATankGameModeBase : public AGameModeBase
 {
@@ -28,4 +26,7 @@ private:
 	void HandleGameStart();
 	void HandleGameOver(bool PlayerWon);
 
+	APawnTank* PlayerPawn = nullptr;
+	int32 RemainingTurrets = 0;
+	int32 GetRemainingTurretsCounter();
 };

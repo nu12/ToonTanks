@@ -83,5 +83,6 @@ void APawnTank::Rotate()
 
 void APawnTank::HandleDestruction()
 {
+	Super::HandleDestruction();
 	UE_LOG(LogTemp, Warning, TEXT("HandleDestruction from Tank!"));
 }
