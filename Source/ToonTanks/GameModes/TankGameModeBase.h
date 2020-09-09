@@ -36,7 +36,11 @@ private:
 	int32 StartDelay = 3;
 
 	APawnTank* PlayerPawn = nullptr;
+
 	APlayerControllerBase* PlayerController = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Music")
+	USoundBase* Music = nullptr;
 
 	int32 RemainingTurrets = 0;
 };

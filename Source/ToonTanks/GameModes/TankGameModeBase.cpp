@@ -21,7 +21,6 @@ void ATankGameModeBase::HandleGameStart()
 
 	PlayerController = Cast<APlayerControllerBase>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
-
 	GameStart(); // BlueprintImplementableEvent: Call the funciton in the Blueprint
 
 	if (PlayerController) 
@@ -38,6 +37,8 @@ void ATankGameModeBase::HandleGameStart()
 			false
 		);
 	}
+
+	if (Music) UGameplayStatics::PlaySound2D(this, Music);
 }
 
 void ATankGameModeBase::HandleGameOver(bool PlayerWon)
