@@ -15,6 +15,8 @@ class TOONTANKS_API ATankGameModeBase : public AGameModeBase
 	
 public:
 	void ActorDied(AActor* DeadActor);
+	
+	UFUNCTION(BlueprintCallable)
 	int32 GetRemainingTurretsCounter();
 
 protected:
