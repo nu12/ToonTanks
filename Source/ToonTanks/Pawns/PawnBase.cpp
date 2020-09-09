@@ -5,7 +5,9 @@
 #include "Components/CapsuleComponent.h"
 #include "ToonTanks/Actors/ProjectileBase.h"
 #include "ToonTanks/Components/HealthComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 APawnBase::APawnBase()
 {
@@ -16,16 +18,31 @@ APawnBase::APawnBase()
 	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Projectile Spawn Point"));
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
+	HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Widget"));
 
 	RootComponent = CapsuleComponent;
 	BaseMesh->SetupAttachment(RootComponent);
 	TurretMesh->SetupAttachment(BaseMesh);
 	ProjectileSpawnPoint->SetupAttachment(TurretMesh);
+	HealthWidgetComponent->SetupAttachment(RootComponent);
 }
 
 void APawnBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//HealthWidgetComponent->GetWidgetClass();
+	RotateWidgetTowardsPlayerCamera();
+}
+
+void APawnBase::RotateWidgetTowardsPlayerCamera()
+{
+	FRotator FaceCameraRotation = UKismetMathLibrary::FindLookAtRotation(
+		HealthWidgetComponent->GetComponentLocation(),									// Widget location
+		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetCameraLocation()	// Camera location
+
+	);
+	HealthWidgetComponent->SetWorldRotation(FaceCameraRotation);
 }
 
 void APawnBase::RotateTurret(FVector TargetLocation)

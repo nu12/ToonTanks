@@ -9,6 +9,7 @@
 class UCapsuleComponent;
 class AProjectileBase;
 class UHealthComponent;
+class UWidgetComponent;
 UCLASS()
 class TOONTANKS_API APawnBase : public APawn
 {
@@ -18,6 +19,8 @@ public:
 	APawnBase();
 
 	virtual void Tick(float DeltaTime) override;
+
+	void RotateWidgetTowardsPlayerCamera();
 
 	virtual void HandleDestruction();
 
@@ -45,6 +48,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UHealthComponent* HealthComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UWidgetComponent* HealthWidgetComponent;
 
 	/*================================ VARIABLES ====================================*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
