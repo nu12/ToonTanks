@@ -15,11 +15,14 @@ class TOONTANKS_API ATankGameModeBase : public AGameModeBase
 	
 public:
 	void ActorDied(AActor* DeadActor);
+	int32 GetRemainingTurretsCounter();
 
 protected:
 	virtual void BeginPlay() override;
+
 	UFUNCTION(BlueprintImplementableEvent)	// It will be called in a Blueprint class
 	void GameStart();						// In this case it doesn't need C++ implementation
+
 	UFUNCTION(BlueprintImplementableEvent)	// It will be called in a Blueprint class
 	void GameOver(bool PlayerWon);			// In this case it doesn't need C++ implementation
 
@@ -27,12 +30,11 @@ private:
 	void HandleGameStart();
 	void HandleGameOver(bool PlayerWon);
 
-	APawnTank* PlayerPawn = nullptr;
-	int32 RemainingTurrets = 0;
-	int32 GetRemainingTurretsCounter();
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game Mode", meta = (AllowPrivateAccess = "true"))
 	int32 StartDelay = 3;
 
+	APawnTank* PlayerPawn = nullptr;
 	APlayerControllerBase* PlayerController = nullptr;
+
+	int32 RemainingTurrets = 0;
 };

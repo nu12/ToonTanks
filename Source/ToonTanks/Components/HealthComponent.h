@@ -15,6 +15,8 @@ class TOONTANKS_API UHealthComponent : public UActorComponent
 public:	
 	UHealthComponent();
 
+	float GetRemainingHealthPercent() const;
+
 protected:
 	virtual void BeginPlay() override;
 

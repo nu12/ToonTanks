@@ -8,9 +8,9 @@
 APawnTank::APawnTank()
 {
 	SpringArmPomponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
-	SpringArmPomponent->SetupAttachment(RootComponent);
-
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+
+	SpringArmPomponent->SetupAttachment(RootComponent);
 	CameraComponent->SetupAttachment(SpringArmPomponent);
 
 }

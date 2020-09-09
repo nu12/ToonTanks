@@ -16,18 +16,21 @@ class TOONTANKS_API APawnBase : public APawn
 
 public:
 	APawnBase();
+
 	virtual void Tick(float DeltaTime) override;
+
 	virtual void HandleDestruction();
+
+	UFUNCTION(BlueprintCallable)
+	float GetHealthBarValue() const;
 	
 protected:
 
 	void RotateTurret(FVector TargetLocation);
-
 	void Fire();
 
-
 private:
-	// Components
+	/*================================ COMPONENTS ====================================*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* CapsuleComponent;
 
@@ -43,16 +46,16 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UHealthComponent* HealthComponent;
 
-	// Variables
+	/*================================ VARIABLES ====================================*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AProjectileBase> ProjectileClass;
 	UPROPERTY(EditAnywhere, Category = "Effects")
 	TSubclassOf<UCameraShake> CameraShake;
 
 	UPROPERTY(EditAnywhere, Category = "Effects")
-	UParticleSystem* DeathParticle;
+	UParticleSystem* DeathParticle = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Effects")
-	USoundBase* DeathSound = nullptr;;
+	USoundBase* DeathSound = nullptr;
 
 };

@@ -17,8 +17,11 @@ class TOONTANKS_API APawnTank : public APawnBase
 public:
 	APawnTank();
 	virtual void Tick(float DeltaTime) override;
+
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 	virtual void HandleDestruction() override;
+
 	bool IsPlayerAlive();
 
 protected:
@@ -26,12 +29,16 @@ protected:
 
 
 private:
+	/*======================== COMPONENTS ================================*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* SpringArmPomponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComponent = nullptr;
+	
+	APlayerController* PlayerController = nullptr;
 
+	/*======================== VARIABLES ================================*/
 	// Tank movement
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float MoveSpeed = 600.f;
@@ -43,11 +50,10 @@ private:
 	FVector MoveDirection;
 	FQuat RotationDirection;
 
+	/*======================== FUNCTIONS ================================*/
 	void CalculateMoveInput(float Value);
 	void CalculateRotationInput(float Value);
 
 	void Move();
 	void Rotate();
-
-	APlayerController* PlayerController = nullptr;
 };

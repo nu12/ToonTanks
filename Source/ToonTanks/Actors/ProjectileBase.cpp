@@ -9,28 +9,27 @@
 
 AProjectileBase::AProjectileBase()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectile Mesh"));
-	RootComponent = StaticMeshComponent;
-	StaticMeshComponent->OnComponentHit.AddDynamic(this, &AProjectileBase::OnHit); // Macro for add dynamic delegate. See OnComponentHit for more information
-
 	ProjectileComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Component"));
+	ParticleTrailComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle Trail"));
+
+	RootComponent = StaticMeshComponent;
+	ParticleTrailComponent->SetupAttachment(RootComponent);
+
 	ProjectileComponent->InitialSpeed = ProjectileSpeed;
 	ProjectileComponent->MaxSpeed = ProjectileSpeed;
 	InitialLifeSpan = 3.f;
-
-	ParticleTrailComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle Trail"));
-	ParticleTrailComponent->SetupAttachment(RootComponent);
 }
 
 
 void AProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
+	StaticMeshComponent->OnComponentHit.AddDynamic(this, &AProjectileBase::OnHit); // Macro for add dynamic delegate. See OnComponentHit for more information
+
 	if (LaunchSound) UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, GetActorLocation());
-	
 }
 
 void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -40,9 +39,9 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	if (!OtherActor || OtherActor == this || OtherActor == MyOwner) return; // Do not damage self
 	if (!HitParticle) UE_LOG(LogTemp, Error, TEXT("ProjectileClass not found!"));
 
+	if (HitSound) UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
 	UGameplayStatics::ApplyDamage(OtherActor, ProjectileDamage, MyOwner->GetInstigatorController(), this, DamageType);
 	UGameplayStatics::SpawnEmitterAtLocation(this, HitParticle, GetActorLocation());
-	if (HitSound) UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
 	GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(CameraShake);
 	Destroy();
 }

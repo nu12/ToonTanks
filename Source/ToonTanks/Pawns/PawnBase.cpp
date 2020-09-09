@@ -7,25 +7,20 @@
 #include "ToonTanks/Components/HealthComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-// Sets default values
 APawnBase::APawnBase()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule Component"));
-	RootComponent = CapsuleComponent;
-
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
-	BaseMesh->SetupAttachment(RootComponent);
-
 	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
-	TurretMesh->SetupAttachment(BaseMesh);
-	
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Projectile Spawn Point"));
-	ProjectileSpawnPoint->SetupAttachment(TurretMesh);
-
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
+
+	RootComponent = CapsuleComponent;
+	BaseMesh->SetupAttachment(RootComponent);
+	TurretMesh->SetupAttachment(BaseMesh);
+	ProjectileSpawnPoint->SetupAttachment(TurretMesh);
 }
 
 void APawnBase::Tick(float DeltaTime)
@@ -62,7 +57,13 @@ void APawnBase::HandleDestruction()
 		UE_LOG(LogTemp, Error, TEXT("DeathParticle not found!"));
 		return;
 	}
+
 	UGameplayStatics::SpawnEmitterAtLocation(this, DeathParticle, GetActorLocation());
 	if (DeathSound) UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
 	GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(CameraShake);
+}
+
+float APawnBase::GetHealthBarValue() const
+{
+	return HealthComponent->GetRemainingHealthPercent();
 }

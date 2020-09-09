@@ -10,8 +10,6 @@ UHealthComponent::UHealthComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-
-
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -35,4 +33,9 @@ void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const UDam
 	if (Health <= 0) {
 		GameMode->ActorDied(GetOwner());
 	}
+}
+
+float UHealthComponent::GetRemainingHealthPercent() const
+{
+	return Health / DefaultHealth;
 }
