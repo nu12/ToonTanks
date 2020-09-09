@@ -23,8 +23,6 @@ void APawnTurret::Tick(float DeltaTime)
 		return;
 	}
 
-	if (GetDistanceToPawn() > FireRange) return;
-
 	RotateTurret(PlayerPawn->GetActorLocation());
 }
 
