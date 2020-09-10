@@ -35,5 +35,26 @@ float UTankMovementComponent::GetAcceptanceRadius() const
 
 void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
 {
+	FVector AITargetDirection = MoveVelocity.GetSafeNormal();
+	FVector ActualForwardDirection = Owner->GetActorForwardVector().GetSafeNormal();
+	
+	// Calculate forward speed
+	float Forward = FVector::DotProduct(AITargetDirection, ActualForwardDirection);
+	FVector MoveDirection = FVector(
+		/* X */ Forward * MoveSpeed * GetWorld()->DeltaTimeSeconds,
+		/* Y */ 0,
+		/* Z */ 0
+	);
 
+	// Calculate rotation speed
+	float Yaw = FVector::CrossProduct(AITargetDirection, ActualForwardDirection).Z;
+	FRotator RotationAmount = FRotator(
+		/* Pitch: Y */ 0,
+		/*  Yaw:  Z */ Yaw * RotationSpeed * GetWorld()->DeltaTimeSeconds,
+		/*  Roll: X */ 0
+	);
+
+	Move(MoveDirection);
+
+	Rotate(FQuat(RotationAmount));
 }

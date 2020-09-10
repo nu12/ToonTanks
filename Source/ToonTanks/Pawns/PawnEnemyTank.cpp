@@ -2,4 +2,9 @@
 
 
 #include "PawnEnemyTank.h"
+#include "ToonTanks/Components/TankMovementComponent.h"
 
+APawnEnemyTank::APawnEnemyTank()
+{
+	MovementComponent = CreateDefaultSubobject<UTankMovementComponent>(TEXT("Movement"));
+}
