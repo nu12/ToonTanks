@@ -26,27 +26,24 @@ void APawnTank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Move pawn
+	if (HasNullPointers()) return;
+
 	Rotate();
 	Move();
+	RotateTurret(GetCursorPositionInTheWorld().ImpactPoint);
+}
 
-	// Rotate Tank Turret
-	if (!PlayerController) {
-		UE_LOG(LogTemp, Error, TEXT("PlayerController not found!"));
-		return;
-	}
-
-	// Get cursor position in the world
+FHitResult APawnTank::GetCursorPositionInTheWorld()
+{
 	FHitResult CursosHitResult; //Out
 	PlayerController->GetHitResultUnderCursor(ECC_Visibility, false, CursosHitResult);
-	RotateTurret(CursosHitResult.ImpactPoint);
+	return CursosHitResult;
 }
 
 void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	// Create input bindings
 	PlayerInputComponent->BindAxis(FName("MoveForward"), this, &APawnTank::CalculateMoveInput);
 	PlayerInputComponent->BindAxis(FName("Turn"), this, &APawnTank::CalculateRotationInput);
 	PlayerInputComponent->BindAction(FName("Fire"), IE_Pressed, this, &APawnTank::Fire);
@@ -64,19 +61,19 @@ void APawnTank::CalculateMoveInput(float Value)
 void APawnTank::CalculateRotationInput(float Value)
 {
 	FRotator RotationAmount = FRotator(
-		0,														//Pitch: X
-		Value * RotationSpeed * GetWorld()->DeltaTimeSeconds,	// Yaw: Z
-		0														// Roll: Y
+		0,														//Pitch: Y
+		Value * RotationSpeed * GetWorld()->DeltaTimeSeconds,	// Yaw:  Z
+		0														// Roll: X
 	);
 	RotationDirection = FQuat(RotationAmount);
 }
 
-void APawnTank::Move()
+void APawnTank::Move() 
 {
 	AddActorLocalOffset(MoveDirection, true);
 }
 
-void APawnTank::Rotate()
+void APawnTank::Rotate() 
 {
 	AddActorLocalRotation(RotationDirection, true);
 }
@@ -90,7 +87,17 @@ void APawnTank::HandleDestruction()
 	SetActorTickEnabled(false); // Stop moving
 }
 
-bool APawnTank::IsPlayerAlive()
+bool APawnTank::IsPlayerAlive() const
 {
 	return bIsPlayerAlive;
+}
+
+bool APawnTank::HasNullPointers()
+{
+	Super::HasNullPointers();
+	if (!PlayerController) {
+		UE_LOG(LogTemp, Error, TEXT("PlayerController not found!"));
+		return true;
+	}
+	return false;
 }

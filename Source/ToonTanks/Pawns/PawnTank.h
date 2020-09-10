@@ -22,11 +22,12 @@ public:
 
 	virtual void HandleDestruction() override;
 
-	bool IsPlayerAlive();
+	bool IsPlayerAlive() const;
 
 protected:
 	virtual void BeginPlay() override;
 
+	virtual bool HasNullPointers() override;
 
 private:
 	/*======================== COMPONENTS ================================*/
@@ -56,4 +57,6 @@ private:
 
 	void Move();
 	void Rotate();
+
+	FHitResult GetCursorPositionInTheWorld();
 };

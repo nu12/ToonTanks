@@ -31,6 +31,10 @@ protected:
 
 	void RotateTurret(FVector TargetLocation);
 	void Fire();
+	virtual void SetupComponents();
+	virtual void SetupAttachments();
+	virtual void CreateDefaultSubobjects();
+	virtual bool HasNullPointers();
 
 private:
 	/*================================ COMPONENTS ====================================*/

@@ -10,25 +10,38 @@
 void APawnTurret::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &APawnTurret::CheckFireCondition, FireRate, true);
 
 	PlayerPawn = Cast<APawnTank>(UGameplayStatics::GetPlayerPawn(this, 0));
+	SetTimerHandle();
+}
+
+bool APawnTurret::HasNullPointers()
+{
+	Super::HasNullPointers();
+	if (!PlayerPawn) {
+		UE_LOG(LogTemp, Error, TEXT("PlayerPawn not found!"));
+		return true;
+	}
+	return false;
+}
+
+void APawnTurret::SetTimerHandle()
+{
+	FTimerHandle FireRateTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &APawnTurret::CheckFireCondition, FireRate, true);
 }
 
 void APawnTurret::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (!PlayerPawn) {
-		UE_LOG(LogTemp, Error, TEXT("PlayerPawn not found!"));
-		return;
-	}
-
+	
+	if (HasNullPointers()) return;
 	RotateTurret(PlayerPawn->GetActorLocation());
 }
 
 void APawnTurret::CheckFireCondition()
 {
-	if (!PlayerPawn) return;
+	if (HasNullPointers()) return;
 
 	if (!PlayerPawn->IsPlayerAlive()) return;
 

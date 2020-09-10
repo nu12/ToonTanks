@@ -22,6 +22,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual bool HasNullPointers() override;
+
 private:
 	APawnTank* PlayerPawn = nullptr;
 	
@@ -31,8 +33,7 @@ private:
 	UPROPERTY(EditAnywhere, category = "Combat")
 	float FireRange = 500.f;
 
-	FTimerHandle FireRateTimerHandle;
-
+	void SetTimerHandle();
 	void CheckFireCondition();
 	float GetDistanceToPawn();
 };
