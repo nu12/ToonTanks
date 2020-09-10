@@ -8,6 +8,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UTankMovementComponent;
 
 UCLASS()
 class TOONTANKS_API APawnTank : public APawnBase
@@ -36,27 +37,18 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComponent = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UTankMovementComponent* MovementComponent = nullptr;
 	
 	APlayerController* PlayerController = nullptr;
 
 	/*======================== VARIABLES ================================*/
-	// Tank movement
-	UPROPERTY(EditAnywhere, Category = "Movement")
-	float MoveSpeed = 600.f;
-	UPROPERTY(EditAnywhere, Category = "Movement")
-	float RotationSpeed = 200.f;
-
 	bool bIsPlayerAlive = true;
-
-	FVector MoveDirection;
-	FQuat RotationDirection;
 
 	/*======================== FUNCTIONS ================================*/
 	void CalculateMoveInput(float Value);
 	void CalculateRotationInput(float Value);
-
-	void Move();
-	void Rotate();
 
 	FHitResult GetCursorPositionInTheWorld();
 };

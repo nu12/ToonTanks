@@ -4,15 +4,16 @@
 #include "PawnTank.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "ToonTanks/Components/TankMovementComponent.h"
 
 APawnTank::APawnTank()
 {
 	SpringArmPomponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	MovementComponent = CreateDefaultSubobject<UTankMovementComponent>(TEXT("Movement"));
 
 	SpringArmPomponent->SetupAttachment(RootComponent);
 	CameraComponent->SetupAttachment(SpringArmPomponent);
-
 }
 
 void APawnTank::BeginPlay()
@@ -28,8 +29,6 @@ void APawnTank::Tick(float DeltaTime)
 
 	if (HasNullPointers()) return;
 
-	Rotate();
-	Move();
 	RotateTurret(GetCursorPositionInTheWorld().ImpactPoint);
 }
 
@@ -51,31 +50,22 @@ void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void APawnTank::CalculateMoveInput(float Value)
 {
-	MoveDirection = FVector(
-		Value * MoveSpeed * GetWorld()->DeltaTimeSeconds,	// X axis, a.k.a Forward vector
-		0,													// Y
-		0													// Z
+	FVector MoveDirection = FVector(
+		/* X */ Value * MovementComponent->GetMoveSpeed() * GetWorld()->DeltaTimeSeconds,
+		/* Y */ 0,
+		/* Z */ 0
 	);
+	MovementComponent->Move(MoveDirection);
 }
 
 void APawnTank::CalculateRotationInput(float Value)
 {
 	FRotator RotationAmount = FRotator(
-		0,														//Pitch: Y
-		Value * RotationSpeed * GetWorld()->DeltaTimeSeconds,	// Yaw:  Z
-		0														// Roll: X
+		/* Pitch: Y */ 0,
+		/*  Yaw:  Z */ Value * MovementComponent->GetRotationSpeed() * GetWorld()->DeltaTimeSeconds,
+		/*  Roll: X */ 0
 	);
-	RotationDirection = FQuat(RotationAmount);
-}
-
-void APawnTank::Move() 
-{
-	AddActorLocalOffset(MoveDirection, true);
-}
-
-void APawnTank::Rotate() 
-{
-	AddActorLocalRotation(RotationDirection, true);
+	MovementComponent->Rotate(FQuat(RotationAmount));
 }
 
 void APawnTank::HandleDestruction()
