@@ -2,7 +2,7 @@
 
 
 #include "TankGameModeBase.h"
-#include "ToonTanks/Pawns/PawnTank.h"
+#include "ToonTanks/Pawns/PawnBase.h"
 #include "ToonTanks/Pawns/PawnTurret.h"
 #include "Kismet/GameplayStatics.h"
 #include "ToonTanks/PlayerControllers/PlayerControllerBase.h"
@@ -11,73 +11,67 @@ void ATankGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SetupVariables();
 	HandleGameStart();
+}
+
+void ATankGameModeBase::SetupVariables()
+{
+	PlayerPawn = Cast<APawnBase>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	RemainingTurrets = GetRemainingTurretsCounter();
+	PlayerController = Cast<APlayerControllerBase>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
 
 void ATankGameModeBase::HandleGameStart()
 {
-	PlayerPawn = Cast<APawnTank>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
-	RemainingTurrets = GetRemainingTurretsCounter();
+	EnablePlayerControllerWithDelay();
 
-	PlayerController = Cast<APlayerControllerBase>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-	GameStart(); // BlueprintImplementableEvent: Call the funciton in the Blueprint
-
-	if (PlayerController) 
-	{
-		PlayerController->SetControllerEnabled(false); // Disable input
-
-		// Create Time Manager and Delegate to reenable the controller
-		FTimerHandle EnableControllerTimerHandle;
-		FTimerDelegate EnableControllerDelegate = FTimerDelegate::CreateUObject(PlayerController, &APlayerControllerBase::SetControllerEnabled, true);
-		GetWorld()->GetTimerManager().SetTimer(
-			EnableControllerTimerHandle,
-			EnableControllerDelegate,
-			StartDelay,
-			false
-		);
-	}
+	GameStart(); // BlueprintImplementableEvent
 
 	if (Music) UGameplayStatics::PlaySound2D(this, Music);
 }
 
+void ATankGameModeBase::EnablePlayerControllerWithDelay() const
+{
+	if (MissingPlayerController()) return;
+	PlayerController->SetControllerEnabled(false); // Disable input
+
+	FTimerHandle EnableControllerTimerHandle; // Create Time Manager and Delegate to reenable the controller
+	FTimerDelegate EnableControllerDelegate = FTimerDelegate::CreateUObject(PlayerController, &APlayerControllerBase::SetControllerEnabled, true);
+	GetWorld()->GetTimerManager().SetTimer(EnableControllerTimerHandle, EnableControllerDelegate, StartDelay, false);
+}
+
 void ATankGameModeBase::HandleGameOver(bool PlayerWon)
 {
-	if(PlayerWon)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player Won"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player Lost"));
-	}
-	GameOver(PlayerWon); // BlueprintImplementableEvent: Call the funciton in the Blueprint
-
+	GameOver(PlayerWon); // BlueprintImplementableEvent
 }
 
-void ATankGameModeBase::ActorDied(AActor* DeadActor)
+void ATankGameModeBase::ActorDied(APawnBase* DeadActor)
 {
+	DeadActor->HandleDestruction();
 	if(DeadActor == PlayerPawn)
 	{
-		PlayerPawn->HandleDestruction();
 		HandleGameOver(false);
-
-		PlayerController->SetControllerEnabled(false); // Disable input
-	}
-	else if(APawnTurret* DeadTurret = Cast<APawnTurret>(DeadActor))
-	{
-		DeadTurret->HandleDestruction();
-		
-		if (--RemainingTurrets <= 0) {
-			HandleGameOver(true);
-		}
+		if (!MissingPlayerController()) PlayerController->SetControllerEnabled(false); // Disable input
+		return;
 	}
 	
+	if (--RemainingTurrets <= 0) HandleGameOver(true);	
 }
 
-int32 ATankGameModeBase::GetRemainingTurretsCounter()
+int32 ATankGameModeBase::GetRemainingTurretsCounter() const
 {
 	TArray<AActor*> TurretActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawnTurret::StaticClass(), TurretActors);
 	return TurretActors.Num();
+}
+
+bool ATankGameModeBase::MissingPlayerController() const
+{
+	if (!PlayerController)
+	{
+		UE_LOG(LogTemp, Error, TEXT("PlayerController not found!"));
+		return true;
+	}
+	return false;
 }

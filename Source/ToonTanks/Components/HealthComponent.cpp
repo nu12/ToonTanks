@@ -2,6 +2,7 @@
 
 
 #include "HealthComponent.h"
+#include "ToonTanks/Pawns/PawnBase.h"
 #include "ToonTanks/GameModes/TankGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -31,7 +32,7 @@ void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const UDam
 	Health = FMath::Clamp<float>(Health - Damage, 0.f, DefaultHealth);
 
 	if (Health <= 0) {
-		GameMode->ActorDied(GetOwner());
+		GameMode->ActorDied(Cast<APawnBase>(GetOwner()));
 	}
 }
 

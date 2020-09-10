@@ -56,4 +56,16 @@ private:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	void PlayEffects() const;
+
+	void SetupComponents();
+
+	void SetupInitialValues();
+
+	void SetupAttachments();
+
+	void SetupPointers();
+
+	bool HasNullPointer() const;
+
 };
