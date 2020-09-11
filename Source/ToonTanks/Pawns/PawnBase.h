@@ -20,7 +20,6 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	void RotateWidgetTowardsPlayerCamera();
 
 	virtual void HandleDestruction();
 
@@ -28,13 +27,16 @@ public:
 	float GetHealthBarValue() const;
 	
 protected:
+	UPROPERTY(EditAnywhere, category = "Combat")
+	float FireRate = 2.f;
 
 	void RotateTurret(FVector TargetLocation);
-	void Fire();
+	virtual void Fire();
 	virtual void SetupComponents();
 	virtual void SetupAttachments();
 	virtual void CreateDefaultSubobjects();
 	virtual bool HasNullPointers();
+	virtual void RotateWidgetTowardsPlayerCamera();
 
 private:
 	/*================================ COMPONENTS ====================================*/
@@ -59,6 +61,7 @@ private:
 	/*================================ VARIABLES ====================================*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AProjectileBase> ProjectileClass;
+	
 	UPROPERTY(EditAnywhere, Category = "Effects")
 	TSubclassOf<UCameraShake> CameraShake;
 

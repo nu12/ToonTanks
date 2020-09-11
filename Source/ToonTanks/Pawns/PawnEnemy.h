@@ -26,10 +26,7 @@ private:
 	APawnTank* PlayerPawn = nullptr;
 
 	UPROPERTY(EditAnywhere, category = "Combat")
-		float FireRate = 2.f;
-
-	UPROPERTY(EditAnywhere, category = "Combat")
-		float FireRange = 500.f;
+	float FireRange = 500.f;
 
 	void SetTimerHandle();
 	void CheckFireCondition();

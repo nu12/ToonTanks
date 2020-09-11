@@ -5,15 +5,20 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "ToonTanks/Components/TankMovementComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 APawnTank::APawnTank()
 {
 	SpringArmPomponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	MovementComponent = CreateDefaultSubobject<UTankMovementComponent>(TEXT("Movement"));
+	ReloadWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Reload Widget"));
 
 	SpringArmPomponent->SetupAttachment(RootComponent);
 	CameraComponent->SetupAttachment(SpringArmPomponent);
+	ReloadWidgetComponent->SetupAttachment(RootComponent);
 }
 
 void APawnTank::BeginPlay()
@@ -32,6 +37,18 @@ void APawnTank::Tick(float DeltaTime)
 	RotateTurret(GetCursorPositionInTheWorld().ImpactPoint);
 }
 
+void APawnTank::RotateWidgetTowardsPlayerCamera()
+{
+	Super::RotateWidgetTowardsPlayerCamera();
+
+	FRotator FaceCameraRotation = UKismetMathLibrary::FindLookAtRotation(
+		ReloadWidgetComponent->GetComponentLocation(),									// Widget location
+		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetCameraLocation()	// Camera location
+
+	);
+	ReloadWidgetComponent->SetWorldRotation(FaceCameraRotation);
+}
+
 FHitResult APawnTank::GetCursorPositionInTheWorld()
 {
 	FHitResult CursosHitResult; //Out
@@ -46,6 +63,18 @@ void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis(FName("MoveForward"), this, &APawnTank::CalculateMoveInput);
 	PlayerInputComponent->BindAxis(FName("Turn"), this, &APawnTank::CalculateRotationInput);
 	PlayerInputComponent->BindAction(FName("Fire"), IE_Pressed, this, &APawnTank::Fire);
+}
+
+void APawnTank::Fire()
+{
+	if (GetWorld()->GetTimeSeconds() < NextShotReadyAt) return;
+	NextShotReadyAt = GetWorld()->GetTimeSeconds() + FireRate;
+	Super::Fire();
+}
+
+float APawnTank::GetReloadBarValue() const
+{
+	return FMath::Clamp<float>(1 - ( (NextShotReadyAt - GetWorld()->GetTimeSeconds()) / FireRate), 0.f, 1.f);
 }
 
 void APawnTank::CalculateMoveInput(float Value)

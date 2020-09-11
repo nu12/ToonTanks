@@ -9,6 +9,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UTankMovementComponent;
+class UWidgetComponent;
 
 UCLASS()
 class TOONTANKS_API APawnTank : public APawnBase
@@ -25,10 +26,17 @@ public:
 
 	bool IsPlayerAlive() const;
 
+	UFUNCTION(BlueprintCallable)
+	float GetReloadBarValue() const;
+
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void Fire() override;
+
 	virtual bool HasNullPointers() override;
+
+	virtual void RotateWidgetTowardsPlayerCamera() override;
 
 private:
 	/*======================== COMPONENTS ================================*/
@@ -40,11 +48,15 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UTankMovementComponent* MovementComponent = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UWidgetComponent* ReloadWidgetComponent;
 	
 	APlayerController* PlayerController = nullptr;
 
 	/*======================== VARIABLES ================================*/
 	bool bIsPlayerAlive = true;
+	float NextShotReadyAt = 0.f;
 
 	/*======================== FUNCTIONS ================================*/
 	void CalculateMoveInput(float Value);
