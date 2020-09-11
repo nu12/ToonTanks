@@ -6,9 +6,9 @@
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
-class APawn;
+class APawnTank;
 class APawnEnemyTank;
-class UTankMovementComponent;
+
 UCLASS()
 class TOONTANKS_API ATankAIController : public AAIController
 {
@@ -20,7 +20,6 @@ protected:
 	void SetPawn(APawn* InPawn) override;
 
 private:
-	APawnEnemyTank* ControlledPawn = nullptr;
-	UTankMovementComponent* MovementComponent = nullptr;
-	APawn* PlayerTank = nullptr;
+	APawnTank* PlayerTank = nullptr;
+	APawnEnemyTank* PawnTank = nullptr;
 };

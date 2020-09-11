@@ -8,3 +8,7 @@ APawnEnemyTank::APawnEnemyTank()
 {
 	MovementComponent = CreateDefaultSubobject<UTankMovementComponent>(TEXT("Movement"));
 }
+float APawnEnemyTank::GetAcceptanceRadius() const
+{
+	return MovementComponent->GetAcceptanceRadius();
+}

@@ -3,26 +3,25 @@
 
 #include "TankAIController.h"
 #include "GameFramework/Pawn.h"
+#include "ToonTanks/Pawns/PawnTank.h"
 #include "ToonTanks/Pawns/PawnEnemyTank.h"
-#include "ToonTanks/Components/TankMovementComponent.h"
 
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
+	PlayerTank = Cast<APawnTank>(GetWorld()->GetFirstPlayerController()->GetPawn());
 }
 
 void ATankAIController::Tick(float Delta)
 {
 	Super::Tick(Delta);
-	if (!ControlledPawn || !PlayerTank) return;
-	MoveToActor(PlayerTank, 100.f);
+	if (!PawnTank || !PlayerTank || !PlayerTank->IsPlayerAlive()) return;
+	
+	MoveToActor(PlayerTank, PawnTank->GetAcceptanceRadius());
 }
 
 void ATankAIController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
-	ControlledPawn = Cast<APawnEnemyTank>(InPawn);
-	//if (!ControlledPawn) return;
-	//MovementComponent = ControlledPawn->FindComponentByClass<UTankMovementComponent>();
+	PawnTank = Cast<APawnEnemyTank>(InPawn);
 }

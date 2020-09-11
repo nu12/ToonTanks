@@ -15,6 +15,7 @@ class TOONTANKS_API APawnEnemyTank : public APawnEnemy
 
 public:
 	APawnEnemyTank();
+	float GetAcceptanceRadius() const;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
