@@ -19,6 +19,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetRemainingTurretsCounter() const;
 
+	int32 GetStartDelay() const;
+
 protected:
 	virtual void BeginPlay() override;
 

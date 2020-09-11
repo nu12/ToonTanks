@@ -8,6 +8,7 @@
 
 class APawnTank;
 class APawnEnemyTank;
+class ATankGameModeBase;
 
 UCLASS()
 class TOONTANKS_API ATankAIController : public AAIController
@@ -22,4 +23,8 @@ protected:
 private:
 	APawnTank* PlayerTank = nullptr;
 	APawnEnemyTank* PawnTank = nullptr;
+	ATankGameModeBase* GameMode = nullptr;
+	bool bCanMove = false;
+	
+	void EnableMovement();
 };

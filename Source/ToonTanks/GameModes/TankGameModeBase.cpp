@@ -75,3 +75,8 @@ bool ATankGameModeBase::MissingPlayerController() const
 	}
 	return false;
 }
+
+int32 ATankGameModeBase::GetStartDelay() const
+{
+	return StartDelay;
+}
