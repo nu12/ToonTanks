@@ -18,7 +18,7 @@ void ATankGameModeBase::BeginPlay()
 void ATankGameModeBase::SetupVariables()
 {
 	PlayerPawn = Cast<APawnBase>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	RemainingTurrets = GetRemainingTurretsCounter();
+	RemainingEnemies = GetRemainingEnemiesCounter();
 	PlayerController = Cast<APlayerControllerBase>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
 
@@ -56,14 +56,14 @@ void ATankGameModeBase::ActorDied(APawnBase* DeadActor)
 		return;
 	}
 	
-	if (--RemainingTurrets <= 0) HandleGameOver(true);	
+	if (--RemainingEnemies <= 0) HandleGameOver(true);
 }
 
-int32 ATankGameModeBase::GetRemainingTurretsCounter() const
+int32 ATankGameModeBase::GetRemainingEnemiesCounter() const
 {
-	TArray<AActor*> TurretActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawnTurret::StaticClass(), TurretActors);
-	return TurretActors.Num();
+	TArray<AActor*> EnemyActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawnEnemy::StaticClass(), EnemyActors);
+	return EnemyActors.Num();
 }
 
 bool ATankGameModeBase::MissingPlayerController() const

@@ -17,7 +17,7 @@ public:
 	void ActorDied(APawnBase* DeadActor);
 	
 	UFUNCTION(BlueprintCallable)
-	int32 GetRemainingTurretsCounter() const;
+	int32 GetRemainingEnemiesCounter() const;
 
 	int32 GetStartDelay() const;
 
@@ -48,5 +48,5 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Music")
 	USoundBase* Music = nullptr;
 
-	int32 RemainingTurrets = 0;
+	int32 RemainingEnemies = 0;
 };
