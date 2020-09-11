@@ -11,11 +11,20 @@
 
 APawnTank::APawnTank()
 {
+	CreateDefaultSubobjects();
+	SetupAttachments();
+}
+
+void APawnTank::CreateDefaultSubobjects()
+{
 	SpringArmPomponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	MovementComponent = CreateDefaultSubobject<UTankMovementComponent>(TEXT("Movement"));
 	ReloadWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Reload Widget"));
+}
 
+void APawnTank::SetupAttachments()
+{
 	SpringArmPomponent->SetupAttachment(RootComponent);
 	CameraComponent->SetupAttachment(SpringArmPomponent);
 	ReloadWidgetComponent->SetupAttachment(RootComponent);
@@ -35,18 +44,7 @@ void APawnTank::Tick(float DeltaTime)
 	if (HasNullPointers()) return;
 
 	RotateTurret(GetCursorPositionInTheWorld().ImpactPoint);
-}
-
-void APawnTank::RotateWidgetTowardsPlayerCamera()
-{
-	Super::RotateWidgetTowardsPlayerCamera();
-
-	FRotator FaceCameraRotation = UKismetMathLibrary::FindLookAtRotation(
-		ReloadWidgetComponent->GetComponentLocation(),									// Widget location
-		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetCameraLocation()	// Camera location
-
-	);
-	ReloadWidgetComponent->SetWorldRotation(FaceCameraRotation);
+	RotateWidgetTowardsPlayerCamera(ReloadWidgetComponent);
 }
 
 FHitResult APawnTank::GetCursorPositionInTheWorld()
@@ -67,6 +65,7 @@ void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void APawnTank::Fire()
 {
+	if (HasNullPointers()) return;
 	if (GetWorld()->GetTimeSeconds() < NextShotReadyAt) return;
 	NextShotReadyAt = GetWorld()->GetTimeSeconds() + FireRate;
 	Super::Fire();
@@ -113,7 +112,7 @@ bool APawnTank::IsPlayerAlive() const
 
 bool APawnTank::HasNullPointers()
 {
-	Super::HasNullPointers();
+	if (Super::HasNullPointers()) return true;
 	if (!PlayerController) {
 		UE_LOG(LogTemp, Error, TEXT("PlayerController not found!"));
 		return true;

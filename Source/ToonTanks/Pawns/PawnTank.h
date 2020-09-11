@@ -36,7 +36,6 @@ protected:
 
 	virtual bool HasNullPointers() override;
 
-	virtual void RotateWidgetTowardsPlayerCamera() override;
 
 private:
 	/*======================== COMPONENTS ================================*/
@@ -56,11 +55,17 @@ private:
 
 	/*======================== VARIABLES ================================*/
 	bool bIsPlayerAlive = true;
+
 	float NextShotReadyAt = 0.f;
 
 	/*======================== FUNCTIONS ================================*/
 	void CalculateMoveInput(float Value);
+
 	void CalculateRotationInput(float Value);
+
+	void CreateDefaultSubobjects();
+
+	void SetupAttachments();
 
 	FHitResult GetCursorPositionInTheWorld();
 };

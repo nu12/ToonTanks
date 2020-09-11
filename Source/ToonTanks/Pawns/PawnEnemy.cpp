@@ -13,9 +13,15 @@ void APawnEnemy::BeginPlay()
 	SetTimerHandle();
 }
 
+void APawnEnemy::SetTimerHandle()
+{
+	FTimerHandle FireRateTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &APawnEnemy::CheckFireCondition, FireRate, true);
+}
+
 bool APawnEnemy::HasNullPointers()
 {
-	Super::HasNullPointers();
+	if (Super::HasNullPointers()) return true;
 	if (!PlayerPawn) {
 		UE_LOG(LogTemp, Error, TEXT("PlayerPawn not found!"));
 		return true;
@@ -23,11 +29,6 @@ bool APawnEnemy::HasNullPointers()
 	return false;
 }
 
-void APawnEnemy::SetTimerHandle()
-{
-	FTimerHandle FireRateTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &APawnEnemy::CheckFireCondition, FireRate, true);
-}
 
 void APawnEnemy::Tick(float DeltaTime)
 {

@@ -12,49 +12,6 @@
 APawnBase::APawnBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	SetupComponents();
-}
-
-void APawnBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);	
-	RotateWidgetTowardsPlayerCamera();
-}
-
-void APawnBase::RotateTurret(FVector TargetLocation)
-{
-	FVector TurretLocation = GetActorLocation();
-	TurretLocation.Z = TargetLocation.Z; // Eliminate rotation in Z axis
-	FRotator RotationDirection = UKismetMathLibrary::FindLookAtRotation(TurretLocation, TargetLocation);
-
-	TurretMesh->SetWorldRotation(RotationDirection);
-}
-
-void APawnBase::Fire()
-{
-	if (HasNullPointers()) return;
-
-	AProjectileBase* Projectile = GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
-	Projectile->SetOwner(this); // Prevent the projectile to damage the Pawn
-
-}
-
-void APawnBase::HandleDestruction()
-{
-	if (HasNullPointers()) return;
-
-	UGameplayStatics::SpawnEmitterAtLocation(this, DeathParticle, GetActorLocation());
-	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
-	GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(CameraShake);
-}
-
-float APawnBase::GetHealthBarValue() const
-{
-	return HealthComponent->GetRemainingHealthPercent();
-}
-
-void APawnBase::SetupComponents()
-{
 	CreateDefaultSubobjects();
 	SetupAttachments();
 }
@@ -78,9 +35,55 @@ void APawnBase::SetupAttachments()
 	HealthWidgetComponent->SetupAttachment(RootComponent);
 }
 
+void APawnBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);	
+	RotateWidgetTowardsPlayerCamera(HealthWidgetComponent);
+}
+
+void APawnBase::RotateWidgetTowardsPlayerCamera(UWidgetComponent* WidgetComponent)
+{
+	FRotator FaceCameraRotation = UKismetMathLibrary::FindLookAtRotation(
+		WidgetComponent->GetComponentLocation(),									// Widget location
+		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetCameraLocation()	// Camera location
+
+	);
+	WidgetComponent->SetWorldRotation(FaceCameraRotation);
+}
+
+void APawnBase::RotateTurret(FVector TargetLocation)
+{
+	FVector TurretLocation = GetActorLocation();
+	TurretLocation.Z = TargetLocation.Z; // Eliminate rotation in Z axis
+	FRotator RotationDirection = UKismetMathLibrary::FindLookAtRotation(TurretLocation, TargetLocation);
+
+	TurretMesh->SetWorldRotation(RotationDirection);
+}
+
+void APawnBase::Fire()
+{
+	if (HasNullPointers()) return;
+
+	AProjectileBase* Projectile = GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
+	Projectile->SetOwner(this); // Prevent the projectile to damage the Pawn
+}
+
+void APawnBase::HandleDestruction()
+{
+	if (HasNullPointers()) return;
+
+	UGameplayStatics::SpawnEmitterAtLocation(this, DeathParticle, GetActorLocation());
+	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+	GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(CameraShake);
+}
+
+float APawnBase::GetHealthBarValue() const
+{
+	return HealthComponent->GetRemainingHealthPercent();
+}
+
 bool APawnBase::HasNullPointers() 
 {
-
 	if (!ProjectileClass)
 	{
 		UE_LOG(LogTemp, Error, TEXT("ProjectileClass not found!"));
@@ -106,14 +109,4 @@ bool APawnBase::HasNullPointers()
 	}	
 	
 	return false;
-}
-
-void APawnBase::RotateWidgetTowardsPlayerCamera()
-{
-	FRotator FaceCameraRotation = UKismetMathLibrary::FindLookAtRotation(
-		HealthWidgetComponent->GetComponentLocation(),									// Widget location
-		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetCameraLocation()	// Camera location
-
-	);
-	HealthWidgetComponent->SetWorldRotation(FaceCameraRotation);
 }

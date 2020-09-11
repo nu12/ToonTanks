@@ -20,7 +20,6 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-
 	virtual void HandleDestruction();
 
 	UFUNCTION(BlueprintCallable)
@@ -31,12 +30,16 @@ protected:
 	float FireRate = 2.f;
 
 	void RotateTurret(FVector TargetLocation);
+
 	virtual void Fire();
-	virtual void SetupComponents();
-	virtual void SetupAttachments();
+
 	virtual void CreateDefaultSubobjects();
+
+	virtual void SetupAttachments();
+
 	virtual bool HasNullPointers();
-	virtual void RotateWidgetTowardsPlayerCamera();
+
+	void RotateWidgetTowardsPlayerCamera(UWidgetComponent* WidgetComponent);
 
 private:
 	/*================================ COMPONENTS ====================================*/

@@ -29,6 +29,8 @@ private:
 	float FireRange = 500.f;
 
 	void SetTimerHandle();
+
 	void CheckFireCondition();
+
 	float GetDistanceToPawn();
 };
